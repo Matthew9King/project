@@ -20,7 +20,7 @@ theorem bar (h : z.a = w.a) (h' : z.b = w.b) : z = w := by
 theorem comp_assoc (f g h : α → α) : (f∘g)∘h=f∘(g∘h) := by 
   exact rfl
 
-structure group (G : Type) where 
+@[ext] structure group (G : Type) where 
   mul : G→G→G
   e : G 
   assoc : ∀ (a b c : G), mul (mul a b) c = mul a (mul b c)
@@ -82,20 +82,39 @@ theorem eIdent {a: permutation α} : comp eIden a = a ∧ comp a eIden = a := by
   rw[partext]
   rfl 
 
---NEED HELP TO UN-SORRY THIS
-theorem exists_inv {g : permutation α} : ∃j, comp j g = eIden ∧ comp g j = eIden := by
-  apply Exists.intro 
+--NEED HELP TO UN-SORRY THIS (I need to figure out how to do this without h hypothesis)
+theorem exists_inv {g g': permutation α} (h : g'.to_fun ∘ g.to_fun = id ): (∃j, comp j g = eIden ∧ comp g j = eIden) := by 
+  apply Exists.intro g' 
   apply And.intro 
-  ext n
-  have ⟨g', l1⟩ := g.IsInv 
-  sorry
-  sorry 
-  
-  
+  ext m 
+  have that1 : (comp g' g).to_fun = id := h
+  rw[that1]
+  rfl 
+
+  ext m 
+  have ⟨g0, l2⟩ := g.IsInv 
+  have that2 : g.to_fun ∘ g'.to_fun = id := by
+    have sl2 : g.to_fun ∘ g'.to_fun ∘ g.to_fun ∘ g0 = g.to_fun ∘ id ∘ g0 := by 
+      rw[←h] 
+      rfl
+    rw[l2.right] at sl2
+    have sll : g.to_fun ∘ id = g.to_fun := rfl 
+    have sllb : g'.to_fun ∘ id = g'.to_fun := rfl
+    have sl2a : g.to_fun ∘ (g'.to_fun ∘ id) = (g.to_fun ∘ id) ∘ g0 := sl2 
+    rw[sll, sllb] at sl2a 
+    rw[l2.right] at sl2a 
+    exact sl2a 
+  have ugh : permutation.to_fun (comp g g') = g.to_fun ∘ g'.to_fun := rfl 
+  rw[ugh]
+  rw[that2] 
+  rfl 
+
 theorem associat {a b c : permutation α} : comp (comp a b) c = comp a (comp b c) := rfl
 
-theorem perms_grp (α : Type) : (group (permutation α)) := by 
-  sorry
+theorem perms_grp (α : Type) : (group (permutation α)) := sorry
+   
+    
+
   
 
   
