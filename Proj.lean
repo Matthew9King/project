@@ -82,44 +82,21 @@ theorem eIdent {a: permutation α} : comp eIden a = a ∧ comp a eIden = a := by
   rw[partext]
   rfl 
 
-#check @congrFun
---NEED HELP TO UN-SORRY THIS (I need to figure out how to do this without h hypothesis)
+
 theorem exists_inv {h : permutation α} : (∃j, comp j h = eIden ∧ comp h j = eIden) := by 
   have ⟨b, l1⟩ := h
   have ⟨k, l2⟩ := l1
-  have g : permutation α := by
+  let g : permutation α := by
     have sl1 : _ := And.intro l2.right l2.left
     have kinv : ∃g, g ∘ k = id ∧ k ∘ g = id := Exists.intro b sl1 
     exact ⟨k, kinv⟩ 
   apply Exists.intro g
   apply And.intro 
-  ext m
-  exact congrFun l2.left m
+  simp [comp,eIden]
+  exact l2.left
 
-
-
-  -- have that1 : (comp g h).to_fun = id := 
-  -- rw[that1]
-  -- rfl 
-
-
-  -- ext m 
-  -- have ⟨g0, l2⟩ := g.IsInv 
-  -- have that2 : g.to_fun ∘ g'.to_fun = id := by
-  --   have sl2 : g.to_fun ∘ g'.to_fun ∘ g.to_fun ∘ g0 = g.to_fun ∘ id ∘ g0 := by 
-  --     rw[←h] 
-  --     rfl
-  --   rw[l2.right] at sl2
-  --   have sll : g.to_fun ∘ id = g.to_fun := rfl 
-  --   have sllb : g'.to_fun ∘ id = g'.to_fun := rfl
-  --   have sl2a : g.to_fun ∘ (g'.to_fun ∘ id) = (g.to_fun ∘ id) ∘ g0 := sl2 
-  --   rw[sll, sllb] at sl2a 
-  --   rw[l2.right] at sl2a 
-  --   exact sl2a 
-  -- have ugh : permutation.to_fun (comp g g') = g.to_fun ∘ g'.to_fun := rfl 
-  -- rw[ugh]
-  -- rw[that2] 
-  -- rfl 
+  simp[comp,eIden]
+  exact l2.right
 
 theorem associat {a b c : permutation α} : comp (comp a b) c = comp a (comp b c) := rfl
 
