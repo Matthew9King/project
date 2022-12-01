@@ -4,18 +4,13 @@ import Std.Tactic.Ext
   a : α
   b : β
 
-
-
 variable {α β : Type}
 variable (z w : Foo α β)
-
-
 
 theorem bar (h : z.a = w.a) (h' : z.b = w.b) : z = w := by
   ext
   exact h
   exact h'
-
 
 theorem comp_assoc (f g h : α → α) : (f∘g)∘h=f∘(g∘h) := by 
   exact rfl
@@ -30,8 +25,6 @@ theorem comp_assoc (f g h : α → α) : (f∘g)∘h=f∘(g∘h) := by
 @[ext] structure permutation (α : Type) where 
   to_fun : α → α 
   IsInv : ∃ g, g ∘ to_fun = id ∧ to_fun ∘ g = id 
-
-variable (c : permutation α)
 
 def comp (a b : permutation α) : permutation α where 
   to_fun := a.to_fun ∘ b.to_fun 
@@ -82,7 +75,6 @@ theorem eIdent {a: permutation α} : comp eIden a = a ∧ comp a eIden = a := by
   rw[partext]
   rfl 
 
-
 theorem exists_inv {h : permutation α} : (∃j, comp j h = eIden ∧ comp h j = eIden) := by 
   have ⟨b, l1⟩ := h
   have ⟨k, l2⟩ := l1
@@ -100,12 +92,8 @@ theorem exists_inv {h : permutation α} : (∃j, comp j h = eIden ∧ comp h j =
 
 theorem associat {a b c : permutation α} : comp (comp a b) c = comp a (comp b c) := rfl
 
-theorem perms_grp (α : Type) : (group (permutation α)) := sorry
-   
-    
-
-  
-
-  
-
-  
+theorem perms_grp (α : Type) : (group (permutation α)) := by
+  have assoc (a b c : permutation α) : comp (comp a b) c = comp a (comp b c) := associat
+  have is_ident (g : permutation α) : comp eIden g = g ∧ comp g eIden = g := eIdent
+  have ex_inv (g : permutation α) : ∃j, comp (j) g = eIden ∧ comp g (j) = eIden := exists_inv
+  exact ⟨comp, eIden, assoc, is_ident, ex_inv⟩ 
